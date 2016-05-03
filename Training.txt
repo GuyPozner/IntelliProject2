@@ -7,4 +7,6 @@ Intellicage training, based on recent trial:
 
 4.     Delay cue adaptation – between 19:00-24:00 – 1.5sec delay, 900msec second light – nosepoke is allowed during light-on. Success – positive sound (10Khz – 4 beeps); premature nosepoke + late nosepoke – negative sound (16Khz). – 2 days.
 
-5.     Task - between 19:00-24:00 – 1.5, 2.5, 3.5 sec delay, 900msec second light – nosepoke is allowed during light-on + 0.5sec. Success – positive sound (10Khz – 4 beeps); premature nosepoke + late nosepoke – negative sound (16Khz). – 1-2 days (depends on success in stage 4).
+5.     Delay cue adaptation – between 19:00-24:00 – 1.5sec delay, 1500msec second light – nosepoke is allowed during light-on. Success – positive sound (10Khz – 4 beeps); premature nosepoke + late nosepoke – negative sound (16Khz). – 4 days.
+
+6.     Task - between 19:00-24:00 – 1.5, 2.5, 3.5 sec delay, 900msec second light – nosepoke is allowed during light-on + 0.5sec. Success – positive sound (10Khz – 4 beeps); premature nosepoke + late nosepoke – negative sound (16Khz).- 2 days (depends on success in stage 4).

@@ -1,0 +1,10 @@
+Intellicage training:
+1.     Free adaptation – 19:00-24:00; mouse enters corner and door opens and light turns on – free access to water – 2 days.
+
+2.     Nosepoke adaptation – between 19:00-24:00, light on 0.5sec after entry to the corner for 5 seconds or until exit, every nosepoke in first 5.5 seconds opens door and receives positive cue. After 5.5 seconds light turns off and negative reinforcer. Door closes after 3 seconds, requiring new visit. – 2 days. Add negative reinforcer during day.
+
+3.     Delay cue adaptation – between 19:00-24:00 – 0.5sec delay, 900 msec light – nosepoke is allowed during light-on only. Success – positive sound (10Khz – 4 beeps); premature nosepoke + late nosepoke – negative sound (16Khz). – 2 days.
+
+4.     Delay cue adaptation – between 19:00-24:00 – 1.5sec delay, 900msec second light – nosepoke is allowed during light-on. Success – positive sound (10Khz – 4 beeps); premature nosepoke + late nosepoke – negative sound (16Khz). – 2 days.
+
+5.     Task - between 19:00-24:00 – 1.5, 2.5, 3.5 sec delay, 900msec second light – nosepoke is allowed during light-on + 0.5sec. Success – positive sound (10Khz – 4 beeps); premature nosepoke + late nosepoke – negative sound (16Khz).- 2 days (depends on success in stage 4).

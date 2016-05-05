@@ -1,0 +1,13 @@
+DateTime	LogCategory	LogType	Cage	Corner	Side	LogNotes
+2016-05-03 15:15:42.45	Info	Application				Session is started
+2016-05-03 17:15:29.32	Warning	Presence	1	3		Presence signal without antenna registration.
+2016-05-04 00:11:39.95	Warning	Presence	1	3		Presence signal without antenna registration.
+2016-05-04 01:31:03.04	Warning	Presence	1	3		Presence signal without antenna registration.
+2016-05-04 06:37:34.09	Warning	Antenna	1	3		Unregistered tag 98102108416
+2016-05-04 20:42:24.90	Warning	Presence	1	3		Presence signal without antenna registration.
+2016-05-05 00:40:53.48	Warning	Presence	1	3		Presence signal without antenna registration.
+2016-05-05 04:05:06.21	Warning	Presence	1	3		Presence signal without antenna registration.
+2016-05-05 05:51:00.96	Warning	Presence	1	3		Presence signal without antenna registration.
+2016-05-05 07:05:20.10	Warning	Presence	1	3		Presence signal without antenna registration.
+2016-05-05 07:21:32.81	Warning	Presence	1	3		Presence signal without antenna registration.
+2016-05-05 10:40:30.82	Info	Application				Session is stopped

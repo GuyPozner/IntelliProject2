@@ -1,7 +1,9 @@
-TaskTraining2_20160505
+TaskTraining2_20160508
 =======================
 
-Upon a visit a random delay timer of {1.5s, 2.5, 3.5} starts then a light cue appears for 0.9s within the time of the light cue it is possible to open the door with a nosepoke, otherwise it counts as a time error{with no negative reinforcement sound}. 
+Upon a visit a random delay timer of {1.5s, 2.5, 3.5} starts then a light cue appears for 0.9s within the time of the light cue it is possible to open the door with a nosepoke, otherwise it counts as a time error{with no negative reinforcement sound}.
+
+Mice recived 10uL per gram of saline(i.e if a mouse weighs 25g it recived 250uL of saline) through intraperitoneal injection.
 
 This R markdown requires ggplot2 package and will install it if it doesn't exist.  
 ```{r, echo=FALSE}
@@ -16,7 +18,7 @@ library(dplyr)
 It read the "animals.txt", "visits.txt" and "nosepokes.txt" files, removes all non-first nosepokes    
 ```{r, echo = FALSE}
 #Read the intellicage data, nosepokes, visits, and animals
-sessionPath <- "Sessions/2016-05-05 10.40.34/"
+sessionPath <- "Sessions/2016-05-08 09.52.06/"
 visits <- read.csv(paste0(sessionPath,"IntelliCage/Visits.txt"), sep = "\t")
 nosepokes <- read.csv(paste0(sessionPath,"IntelliCage/Nosepokes.txt"), sep = "\t")
 
@@ -170,7 +172,7 @@ plot(lickPointsPlot)
 
 
 This is a plot showing the amount of nosepokes in the time window per day per animal  
-```{r, echo = FALSE}
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 #find all the nosepokes which occoured in the time windows
 library(lubridate)
 hourNosepokes <- hour(ymd_hms(as.POSIXct(nosepokes$Start)))
@@ -237,7 +239,7 @@ results$TimeError <- TimeError
 
 This is a plot showing the fraction of errors per time window per module,
 the number of the module corresponds the anticipation time in seconds.
-```{r, echo = FALSE, fig.width=10, fig.height=4}
+```{r, echo = FALSE, fig.width=10, fig.height=4, warning = FALSE, message = FALSE}
 p3 <- ggplot(results,
              aes(Day,
                  TimeError/Count,
@@ -260,13 +262,14 @@ p4 <- ggplot(windowNosepokes, aes(ReactTime)) +
         ggtitle("Reaction times histogram") +
         geom_vline(xintercept =  median(windowNosepokes$ReactTime),
                    colour = "salmon", linetype = 5) +
-        facet_grid(Day ~ ModuleName)
+        facet_grid(AnimalName ~ ModuleName)
         
 print(p4)
 print(paste0("The median reaction time in seconds:"
              ,median(windowNosepokes$ReactTime)))
 ```
-This is an histogram showing the reaction times(values under zero are nosepokes before the light cue) by animal by day, the salmon colored line is the overall median reaction time:
+
+
 ```{r, echo = FALSE, fig.width=12, fig.height=18}
 p5 <- ggplot(windowNosepokes, aes(ReactTime)) +
         geom_histogram(binwidth = 0.1) +
@@ -274,9 +277,9 @@ p5 <- ggplot(windowNosepokes, aes(ReactTime)) +
         ggtitle("Reaction times histogram") +
         geom_vline(xintercept =  median(windowNosepokes$ReactTime),
                    colour = "salmon", linetype = 5) +
-        facet_grid(AnimalName ~ Day)
-print(p5)
+        facet_grid(AnimalName ~ ModuleName)
+# print(p5)
 ```
 
 ##Conclusion  
-The learning curve saturated.
+Seems like there is little to no effect of the saline injection.

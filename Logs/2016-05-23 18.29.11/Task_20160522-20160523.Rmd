@@ -295,8 +295,8 @@ These are the summarized results
 ```{r, echo = FALSE, fig.width=6, fig.height=8}
 #Add sound and injection factor columns
 results$Injection[results$Day == 22 & (results$AnimalName =="Animal 4" | results$AnimalName =="Animal 6" | results$AnimalName == "Animal 13")] <- "CNO"
-results$Injection[results$Day == 22 & !(results$AnimalName =="Animal 4" | results$AnimalName =="Animal 6" | results$AnimalName == "Animal 13")] <- "Saline"
-results$Injection[results$Day == 23 & !(results$AnimalName =="Animal 4" | results$AnimalName =="Animal 6" | results$AnimalName == "Animal 13")] <- "CNO"
+results$Injection[results$Day == 22 & (results$AnimalName =="Animal 2" | results$AnimalName =="Animal 5" | results$AnimalName == "Animal 9")] <- "Saline"
+results$Injection[results$Day == 23 & (results$AnimalName =="Animal 2" | results$AnimalName =="Animal 5" | results$AnimalName == "Animal 9")] <- "CNO"
 results$Injection[results$Day == 23 & (results$AnimalName =="Animal 4" | results$AnimalName =="Animal 6" | results$AnimalName == "Animal 13")] <- "Saline"
 results$Sound[results$ModuleName == "Module 1" | results$ModuleName == "Module 2" | results$ModuleName == "Module 3"] <- "Off"
 results$Sound[!(results$ModuleName == "Module 1" | results$ModuleName == "Module 2" | results$ModuleName == "Module 3")] <- "On"

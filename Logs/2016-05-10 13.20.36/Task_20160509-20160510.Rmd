@@ -290,6 +290,13 @@ reactionMeanGroups$SD <- aggregate(reactionMeanAnimals$MeanReactTime,
                                    sd)$x
 reactionMeanGroups$SEM <-  reactionMeanGroups$SD/(sqrt(length(unique(windowNosepokes$AnimalName))))
 print(reactionMeanGroups)
+
+#reorder factor levels to make the graph in the logical order
+reactionMeanGroups$Injection <- factor(as.factor(reactionMeanGroups$Injection),
+                                     levels(as.factor(reactionMeanGroups$Injection))[c(2,1)])
+reactionMeanGroups$Sound <- factor(as.factor(reactionMeanGroups$Sound),
+                                 levels(as.factor(reactionMeanGroups$Sound))[c(1,2)])
+
 #Create a grouped bar graph for the results summary
 p8 <- ggplot(reactionMeanGroups, aes(x=Sound, y=MeanReactTime, fill=Injection)) + 
       geom_bar(position=position_dodge(), stat="identity") +
@@ -404,6 +411,11 @@ ImpulseErrorMean$SD <- aggregate(results$ImpulseFraction,
 
 ImpulseErrorMean$SEM <-  ImpulseErrorMean$SD/(sqrt(length(unique(windowNosepokes$AnimalName))))
 print(ImpulseErrorMean)
+#reorder factor levels to make the graph in the logical order
+ImpulseErrorMean$Injection <- factor(as.factor(ImpulseErrorMean$Injection),
+                                     levels(as.factor(ImpulseErrorMean$Injection))[c(2,1)])
+ImpulseErrorMean$Sound <- factor(as.factor(ImpulseErrorMean$Sound),
+                                 levels(as.factor(ImpulseErrorMean$Sound))[c(1,2)])
 
 #Create a grouped bar graph for the Impulse Error summary
 p9 <- ggplot(ImpulseErrorMean, aes(x=Sound, y=MeanImpulseError, fill=Injection)) + 

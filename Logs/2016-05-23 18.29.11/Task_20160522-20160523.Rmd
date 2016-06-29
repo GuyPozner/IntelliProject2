@@ -192,6 +192,8 @@ hourNosepokes <- hourNosepokes[inds]
 windowNosepokes <- nosepokes
 dayNosepokes <- day(ymd_hms(as.POSIXct(
                     windowNosepokes$Start)))
+hourNosepokes <- hour(ymd_hms(as.POSIXct(
+                    windowNosepokes$Start)))
 windowNosepokes$Day <- dayNosepokes
 windowNosepokes$Hour <- hourNosepokes
 startHour <- 19
@@ -212,6 +214,17 @@ windowNosepokes$ModuleName <- lapply(windowNosepokes$VisitID,function(x){
     mName
 })
 windowNosepokes$ModuleName <- as.factor(unlist(windowNosepokes$ModuleName))
+
+#Add sound and injection factor columns
+windowNosepokes$Injection[windowNosepokes$Day == 22 & (windowNosepokes$AnimalName =="Animal 4" | windowNosepokes$AnimalName =="Animal 6" | windowNosepokes$AnimalName == "Animal 13")] <- "CNO"
+windowNosepokes$Injection[windowNosepokes$Day == 22 & (windowNosepokes$AnimalName =="Animal 2" | windowNosepokes$AnimalName =="Animal 5" | windowNosepokes$AnimalName == "Animal 9")] <- "Saline"
+windowNosepokes$Injection[windowNosepokes$Day == 23 & (windowNosepokes$AnimalName =="Animal 2" | windowNosepokes$AnimalName =="Animal 5" | windowNosepokes$AnimalName == "Animal 9")] <- "CNO"
+windowNosepokes$Injection[windowNosepokes$Day == 23 & (windowNosepokes$AnimalName =="Animal 4" | windowNosepokes$AnimalName =="Animal 6" | windowNosepokes$AnimalName == "Animal 13")] <- "Saline"
+windowNosepokes$Sound[windowNosepokes$ModuleName == "Module 1" | windowNosepokes$ModuleName == "Module 2" | windowNosepokes$ModuleName == "Module 3"] <- "Off"
+windowNosepokes$Sound[!(windowNosepokes$ModuleName == "Module 1" | windowNosepokes$ModuleName == "Module 2" | windowNosepokes$ModuleName == "Module 3")] <- "On"
+
+
+
 #make a data frame with the count of nosepokes in the time window for each day for each animal
 results <-  expand.grid(animals$AnimalName, 
                         unique(windowNosepokes$Day),
@@ -228,12 +241,19 @@ visits$Start <- as.POSIXct(visits$Start)
 source("findReactTimes3.R")
 windowNosepokes$ReactTime <- findReactTimes3(visits, windowNosepokes)
 windowNosepokes$TimeError[windowNosepokes$ReactTime < 0 | windowNosepokes$ReactTime > 0.9] <- 1
+windowNosepokes$ImpulseError <- windowNosepokes$ReactTime < 0
 source("sumTimeErrors.R")
 source("sumNosepokes.R")
+source("sumImpulseErrors.R")
 TimeError <- as.numeric()
 Count <- as.numeric()
+ImpulseError <- as.numeric()
 for(i in 1:nrow(results)){
         TimeError[i] <- sumTimeErrors(windowNosepokes, 
+                                      results$AnimalName[i], 
+                                      results$Day[i], 
+                                      results$ModuleName[i])
+        ImpulseError[i] <- sumImpulseErrors(windowNosepokes, 
                                       results$AnimalName[i], 
                                       results$Day[i], 
                                       results$ModuleName[i])
@@ -245,7 +265,47 @@ for(i in 1:nrow(results)){
 }
 results$Count <- Count
 results$TimeError <- TimeError
+results$ImpulseError <-  ImpulseError
 ```
+
+This is a table of the mean reaction time for each condition for each mouse only on trails when light appeared,
+including time errors.  
+```{r, echo = FALSE}
+#Calculate the mean reaction time for each animal in each condition
+lightNosepokes <- windowNosepokes$ReactTime > 0
+reactionMeanAnimals <- aggregate(windowNosepokes$ReactTime[lightNosepokes],
+                          list(windowNosepokes$AnimalName[lightNosepokes],
+                               windowNosepokes$Injection[lightNosepokes], 
+                               windowNosepokes$Sound[lightNosepokes]), 
+                          mean)
+names(reactionMeanAnimals) <- c("AnimalName", "Injection", "Sound", "MeanReactTime")
+
+#Calculate the mean reaction time for all animals in each condition
+reactionMeanGroups <- aggregate(reactionMeanAnimals$MeanReactTime, 
+                                list(reactionMeanAnimals$Injection, 
+                                     reactionMeanAnimals$Sound), 
+                                mean)
+names(reactionMeanGroups) <- c("Injection", "Sound", "MeanReactTime")
+reactionMeanGroups$SD <- aggregate(reactionMeanAnimals$MeanReactTime, 
+                                   list(reactionMeanAnimals$Injection, 
+                                        reactionMeanAnimals$Sound), 
+                                   sd)$x
+
+reactionMeanGroups$SEM <-  reactionMeanGroups$SD/(sqrt(length(unique(windowNosepokes$AnimalName))))
+print(reactionMeanGroups)
+#Create a grouped bar graph for the results summary
+p8 <- ggplot(reactionMeanGroups, aes(x=Sound, y=MeanReactTime, fill=Injection)) + 
+      geom_bar(position=position_dodge(), stat="identity") +
+      geom_errorbar(aes(ymin=MeanReactTime-SEM, ymax=MeanReactTime+SEM),
+                  width=.2,                    # Width of the error bars
+                  position=position_dodge(.9)) +
+        ggtitle("Mean of reaction time with SEM")
+print(p8)
+
+
+```
+
+
 
 This is a plot showing the fraction of errors per time window per module,
 the number of the module corresponds the anticipation time in seconds.
@@ -263,6 +323,7 @@ p3 <- ggplot(results,
 print(p3)
 results$ErrorFraction <- results$TimeError/results$Count
 ```
+
 
 This is an histogram showing the reaction times(values under zero are nosepokes before the light cue) by Day by anticipation time, the salmon colored line is the overall median reaction time:
 ```{r, echo = FALSE, fig.width=10, fig.height=9}
@@ -345,4 +406,32 @@ p7 <- ggplot(results,
         ggtitle("Error fraction per day")
 print(p7)
 ```
+
+```{r, echo = FALSE}
+
+#Calculate the mean Impulse error percentage for all animals in each condition
+results$ImpulseFraction <-results$ImpulseError/results$Count
+ImpulseErrorMean <- aggregate(results$ImpulseFraction, 
+                                list(results$Injection, 
+                                     results$Sound), 
+                                mean)
+names(ImpulseErrorMean) <- c("Injection", "Sound", "MeanImpulseError")
+ImpulseErrorMean$SD <- aggregate(results$ImpulseFraction, 
+                                list(results$Injection, 
+                                     results$Sound),
+                                sd)$x
+
+ImpulseErrorMean$SEM <-  ImpulseErrorMean$SD/(sqrt(length(unique(windowNosepokes$AnimalName))))
+print(ImpulseErrorMean)
+
+#Create a grouped bar graph for the Impulse Error summary
+p9 <- ggplot(ImpulseErrorMean, aes(x=Sound, y=MeanImpulseError, fill=Injection)) + 
+      geom_bar(position=position_dodge(), stat="identity") +
+      geom_errorbar(aes(ymin=MeanImpulseError-SEM, ymax=MeanImpulseError+SEM),
+                  width=.2,                    # Width of the error bars
+                  position=position_dodge(.9)) +
+        ggtitle("Mean of Impulse Errors percentage with SEM")
+print(p9)
+```
 ##Conclusion  
+

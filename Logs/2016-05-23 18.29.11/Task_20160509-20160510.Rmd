@@ -239,19 +239,12 @@ visits$Start <- as.POSIXct(visits$Start)
 source("findReactTimes3.R")
 windowNosepokes$ReactTime <- findReactTimes3(visits, windowNosepokes)
 windowNosepokes$TimeError[windowNosepokes$ReactTime < 0 | windowNosepokes$ReactTime > 0.9] <- 1
-windowNosepokes$ImpulseError <- windowNosepokes$ReactTime < 0
 source("sumTimeErrors.R")
 source("sumNosepokes.R")
-source("sumImpulseErrors.R")
 TimeError <- as.numeric()
 Count <- as.numeric()
-ImpulseError <- as.numeric()
 for(i in 1:nrow(results)){
         TimeError[i] <- sumTimeErrors(windowNosepokes, 
-                                      results$AnimalName[i], 
-                                      results$Day[i], 
-                                      results$ModuleName[i])
-        ImpulseError[i] <- sumImpulseErrors(windowNosepokes, 
                                       results$AnimalName[i], 
                                       results$Day[i], 
                                       results$ModuleName[i])
@@ -263,7 +256,6 @@ for(i in 1:nrow(results)){
 }
 results$Count <- Count
 results$TimeError <- TimeError
-results$ImpulseError <-  ImpulseError
 ```
 
 This is a table of the mean reaction time for each condition for each mouse only on trails when light appeared,
@@ -284,20 +276,11 @@ reactionMeanGroups <- aggregate(reactionMeanAnimals$MeanReactTime,
                                      reactionMeanAnimals$Sound), 
                                 mean)
 names(reactionMeanGroups) <- c("Injection", "Sound", "MeanReactTime")
-reactionMeanGroups$SD <- aggregate(reactionMeanAnimals$MeanReactTime, 
+reactionMeanGroups$sd <- aggregate(reactionMeanAnimals$MeanReactTime, 
                                    list(reactionMeanAnimals$Injection, 
                                         reactionMeanAnimals$Sound), 
                                    sd)$x
-reactionMeanGroups$SEM <-  reactionMeanGroups$SD/(sqrt(length(unique(windowNosepokes$AnimalName))))
 print(reactionMeanGroups)
-#Create a grouped bar graph for the results summary
-p8 <- ggplot(reactionMeanGroups, aes(x=Sound, y=MeanReactTime, fill=Injection)) + 
-      geom_bar(position=position_dodge(), stat="identity") +
-      geom_errorbar(aes(ymin=MeanReactTime-SEM, ymax=MeanReactTime+SEM),
-                  width=.2,                    # Width of the error bars
-                  position=position_dodge(.9)) +
-        ggtitle("Mean of reaction time with SEM")
-print(p8)
 ```
 
 
@@ -387,32 +370,4 @@ p6 <- ggplot(resSum, aes(x=Sound, y=Mean, fill=Injection)) +
 print(resSum)
 print(p6)
 ```
-
-```{r, echo = FALSE}
-
-#Calculate the mean Impulse error percentage for all animals in each condition
-results$ImpulseFraction <-results$ImpulseError/results$Count
-ImpulseErrorMean <- aggregate(results$ImpulseFraction, 
-                                list(results$Injection, 
-                                     results$Sound), 
-                                mean)
-names(ImpulseErrorMean) <- c("Injection", "Sound", "MeanImpulseError")
-ImpulseErrorMean$SD <- aggregate(results$ImpulseFraction, 
-                                list(results$Injection, 
-                                     results$Sound),
-                                sd)$x
-
-ImpulseErrorMean$SEM <-  ImpulseErrorMean$SD/(sqrt(length(unique(windowNosepokes$AnimalName))))
-print(ImpulseErrorMean)
-
-#Create a grouped bar graph for the Impulse Error summary
-p9 <- ggplot(ImpulseErrorMean, aes(x=Sound, y=MeanImpulseError, fill=Injection)) + 
-      geom_bar(position=position_dodge(), stat="identity") +
-      geom_errorbar(aes(ymin=MeanImpulseError-SEM, ymax=MeanImpulseError+SEM),
-                  width=.2,                    # Width of the error bars
-                  position=position_dodge(.9)) +
-        ggtitle("Mean of Impulse Errors percentage with SEM")
-print(p9)
-```
- 
 ##Conclusion  
